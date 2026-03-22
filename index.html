@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human Resonanz — Bewusstsein. Energie. Entwicklung.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --black2: #0F0F0F;
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --white: #F5F0E8;
+    --white-mid: #9A9080;
+    --white-soft: #3A3530;
+    --border: rgba(201,168,76,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    width: 5px; height: 5px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 28px; height: 28px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.12s ease;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 32px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.98), transparent);
+  }
+
+  .nav-logo { display: flex; align-items: center; gap: 16px; text-decoration: none; }
+  .nav-logo img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(201,168,76,0.3)); transition: filter 0.4s; }
+  .nav-logo:hover img { filter: drop-shadow(0 0 16px rgba(201,168,76,0.6)); }
+  .nav-logo-text { font-size: 11px; font-weight: 500; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; }
+
+  .nav-links { display: flex; gap: 48px; list-style: none; }
+  .nav-links a { font-size: 10px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--white-mid); text-decoration: none; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,0.3); padding-bottom: 2px; transition: all 0.3s; }
+  .nav-cta:hover { color: var(--gold-light); border-color: var(--gold-light); }
+
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 140px 64px 100px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(201,168,76,0.04) 0%, transparent 70%); pointer-events: none; }
+
+  .hero-symbol { position: relative; width: 140px; height: 140px; margin-bottom: 64px; animation: breathe 8s ease-in-out infinite; }
+  .hero-symbol img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 24px rgba(201,168,76,0.35)) drop-shadow(0 0 60px rgba(201,168,76,0.1)); }
+  .hero-symbol-ring { position: absolute; inset: -24px; border: 1px solid rgba(201,168,76,0.08); border-radius: 50%; animation: spin 30s linear infinite; }
+
+  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hero-label { font-size: 10px; font-weight: 400; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; opacity: 0; animation: fadeUp 1.2s 0.4s forwards; }
+
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 8vw, 110px); font-weight: 300; line-height: 1.15; margin-bottom: 40px; opacity: 0; animation: fadeUp 1.2s 0.6s forwards; }
+  .hero-title .line { display: block; }
+  .hero-title .line-gold { color: var(--gold); font-style: italic; }
+  .hero-title .line-dim { color: var(--white-mid); }
+
+  .hero-divider { width: 1px; height: 60px; background: linear-gradient(to bottom, var(--gold), transparent); margin: 0 auto 40px; opacity: 0; animation: fadeIn 1.2s 0.8s forwards; }
+
+  .hero-subtitle { font-size: 15px; font-weight: 300; line-height: 2; color: var(--white-mid); max-width: 480px; margin: 0 auto 56px; opacity: 0; animation: fadeUp 1.2s 1s forwards; }
+
+  .hero-ctas { display: flex; gap: 24px; justify-content: center; opacity: 0; animation: fadeUp 1.2s 1.2s forwards; }
+
+  .btn-primary { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--black); background: var(--gold); padding: 16px 40px; text-decoration: none; transition: all 0.4s; }
+  .btn-primary:hover { background: var(--gold-light); box-shadow: 0 0 32px rgba(201,168,76,0.25); }
+
+  .btn-ghost { font-size: 10px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--white-mid); background: transparent; border: 1px solid var(--white-soft); padding: 16px 40px; text-decoration: none; transition: all 0.4s; }
+  .btn-ghost:hover { color: var(--white); border-color: var(--white-mid); }
+
+  .hero-scroll { position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; animation: fadeIn 1.2s 1.8s forwards; }
+  .hero-scroll span { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--white-soft); }
+  .scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom, rgba(201,168,76,0.6), transparent); animation: pulse 2.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  .rule { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
+
+  .intro { padding: 140px 64px; max-width: 800px; margin: 0 auto; text-align: center; }
+  .section-label { font-size: 9px; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 40px; display: block; }
+  .intro-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(22px, 2.8vw, 32px); font-weight: 300; line-height: 1.7; color: var(--white-mid); font-style: italic; }
+  .intro-text strong { color: var(--white); font-style: normal; font-weight: 400; }
+  .intro-text .gold { color: var(--gold); font-style: normal; }
+
+  .worlds { padding: 80px 64px 160px; max-width: 1400px; margin: 0 auto; }
+  .worlds-header { text-align: center; margin-bottom: 100px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 5vw, 64px); font-weight: 300; line-height: 1.1; margin-bottom: 20px; }
+  .section-subtitle { font-size: 13px; font-weight: 300; color: var(--white-mid); letter-spacing: 1px; line-height: 1.8; }
+
+  .worlds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+
+  .world-card { background: var(--black); padding: 64px 48px; position: relative; overflow: hidden; transition: background 0.5s; text-decoration: none; color: inherit; display: block; }
+  .world-card:hover { background: var(--black2); }
+  .world-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 0.5s ease; }
+  .world-card:hover::after { transform: scaleX(1); }
+
+  .world-num { font-family: 'Cormorant Garamond', serif; font-size: 11px; font-weight: 300; letter-spacing: 4px; color: var(--white-soft); margin-bottom: 48px; }
+  .world-tag { font-size: 9px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; display: block; }
+  .world-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 2.5vw, 40px); font-weight: 300; line-height: 1.2; margin-bottom: 24px; color: var(--white); }
+  .world-desc { font-size: 14px; font-weight: 300; line-height: 1.9; color: var(--white-mid); margin-bottom: 48px; }
+  .world-link { font-size: 10px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 12px; transition: gap 0.4s; }
+  .world-card:hover .world-link { gap: 20px; }
+  .world-link-line { display: inline-block; width: 24px; height: 1px; background: var(--gold); transition: width 0.4s; }
+  .world-card:hover .world-link-line { width: 40px; }
+
+  .about { padding: 160px 64px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 120px; align-items: center; }
+  .about-visual { position: relative; display: flex; align-items: center; justify-content: center; }
+  .about-visual img { width: 280px; height: 280px; object-fit: contain; position: relative; z-index: 2; filter: drop-shadow(0 0 40px rgba(201,168,76,0.2)); }
+  .about-ring { position: absolute; width: 340px; height: 340px; border: 1px solid var(--border); border-radius: 50%; animation: spin 40s linear infinite; }
+  .about-ring2 { position: absolute; width: 420px; height: 420px; border: 1px solid rgba(201,168,76,0.04); border-radius: 50%; animation: spin 60s linear infinite reverse; }
+  .about-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 3.5vw, 52px); font-weight: 300; line-height: 1.2; margin-bottom: 32px; }
+  .about-title em { color: var(--gold); font-style: italic; }
+  .about-text { font-size: 14px; font-weight: 300; line-height: 2; color: var(--white-mid); margin-bottom: 40px; }
+  .about-creds { margin-bottom: 48px; }
+  .cred { font-size: 13px; font-weight: 300; color: var(--white-mid); padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; gap: 16px; }
+  .cred span { color: var(--gold); }
+  .about-more { background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 16px; font-size: 10px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); transition: gap 0.4s; padding: 0; }
+  .about-more:hover { gap: 24px; }
+  .about-more-line { display: inline-block; width: 32px; height: 1px; background: var(--gold); transition: width 0.4s; }
+  .about-more:hover .about-more-line { width: 48px; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(8,8,8,0.92); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s; padding: 24px; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--black2); border: 1px solid var(--border); max-width: 600px; width: 100%; padding: 64px; position: relative; max-height: 80vh; overflow-y: auto; }
+  .modal-close { position: absolute; top: 24px; right: 24px; background: none; border: none; color: var(--white-mid); font-size: 10px; letter-spacing: 2px; cursor: pointer; transition: color 0.3s; }
+  .modal-close:hover { color: var(--white); }
+  .modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 8px; }
+  .modal-sub { font-size: 10px; letter-spacing: 3px; color: var(--gold); display: block; margin-bottom: 40px; }
+  .modal p { font-size: 14px; font-weight: 300; line-height: 2; color: var(--white-mid); margin-bottom: 20px; }
+  .modal p strong { color: var(--white); font-weight: 400; }
+
+  footer { padding: 160px 64px 80px; text-align: center; position: relative; }
+  footer::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 1px; height: 80px; background: linear-gradient(to bottom, var(--gold), transparent); }
+  .footer-symbol { width: 48px; height: 48px; object-fit: contain; margin-bottom: 24px; filter: drop-shadow(0 0 12px rgba(201,168,76,0.3)); }
+  .footer-name { font-size: 11px; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .footer-tag { font-size: 10px; letter-spacing: 3px; color: var(--white-soft); margin-bottom: 80px; }
+  .footer-cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 52px); font-weight: 300; line-height: 1.2; margin-bottom: 24px; }
+  .footer-cta-sub { font-size: 14px; font-weight: 300; line-height: 2; color: var(--white-mid); margin-bottom: 48px; }
+  .footer-meta { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin-top: 80px; margin-bottom: 40px; }
+  .footer-meta a { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--white-soft); text-decoration: none; transition: color 0.3s; }
+  .footer-meta a:hover { color: var(--white-mid); }
+  .footer-copy { font-size: 11px; color: var(--white-soft); letter-spacing: 1px; }
+
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 24px; }
+    .nav-links { display: none; }
+    .hero, .intro, .worlds, .about, footer { padding-left: 24px; padding-right: 24px; }
+    .worlds-grid { grid-template-columns: 1fr; }
+    .about { grid-template-columns: 1fr; gap: 60px; }
+    .about-visual { order: -1; }
+    .modal { padding: 40px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="Firmenlogo_SD_202603removebgpreview.png" alt="Human Resonanz">
+    <span class="nav-logo-text">Human Resonanz</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#lichtkern">Lichtkern</a></li>
+    <li><a href="#akademie">Akademie</a></li>
+    <li><a href="#ueber">Über</a></li>
+  </ul>
+  <a href="https://lichtkern.vercel.app" class="nav-cta">Zur App</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-symbol">
+    <div class="hero-symbol-ring"></div>
+    <img src="Firmenlogo_SD_202603removebgpreview.png" alt="Human Resonanz">
+  </div>
+  <p class="hero-label">Human Resonanz</p>
+  <h1 class="hero-title">
+    <span class="line">Bewusstsein<span style="color:var(--gold);opacity:0.3">.</span></span>
+    <span class="line line-gold">Energie<span style="color:var(--white-mid);opacity:0.3">.</span></span>
+    <span class="line line-dim">Entwicklung<span style="color:var(--gold);opacity:0.3">.</span></span>
+  </h1>
+  <div class="hero-divider"></div>
+  <p class="hero-subtitle">Die Plattform für Menschen die mehr sehen —<br>und mehr bewegen wollen.</p>
+  <div class="hero-ctas">
+    <a href="https://lichtkern.vercel.app" class="btn-primary">Lichtkern öffnen</a>
+    <a href="#intro" class="btn-ghost">Mehr erfahren</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Entdecken</span>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="intro reveal" id="intro">
+  <span class="section-label">Das Fundament</span>
+  <p class="intro-text">
+    Hinter jeder erfolgreichen Praxis steht ein Mensch der gelernt hat,
+    sein inneres Wissen mit äußerer Klarheit zu verbinden.
+    <br><br>
+    <strong>Human Resonanz gibt dir beides</strong> —
+    in einem Ökosystem das <span class="gold">Struktur mit Energie</span> verbindet
+    und mit dir wächst.
+  </p>
+</section>
+
+<div class="rule"></div>
+
+<section class="worlds" id="lichtkern">
+  <div class="worlds-header reveal">
+    <span class="section-label">Drei Ebenen — Ein Ökosystem</span>
+    <h2 class="section-title">Das System</h2>
+    <p class="section-subtitle">Jede Ebene für sich stark. Zusammen unaufhaltbar.</p>
+  </div>
+  <div class="worlds-grid">
+    <a href="https://lichtkern.vercel.app" class="world-card reveal" style="transition-delay:0.1s">
+      <div class="world-num">— 01</div>
+      <span class="world-tag">Für Praktiker</span>
+      <h3 class="world-title">Lichtkern</h3>
+      <p class="world-desc">Deine Praxis. Endlich strukturiert. CRM, Sessiondokumentation, KI-Auswertung, Human Design und PDF-Export — alles an einem Ort. Entwickelt von einem Energetiker. Für Energetiker.</p>
+      <span class="world-link"><span class="world-link-line"></span>Zur App</span>
+    </a>
+    <div class="world-card reveal" style="transition-delay:0.2s" id="akademie">
+      <div class="world-num">— 02</div>
+      <span class="world-tag">Für Lernende</span>
+      <h3 class="world-title">Resonanz Akademie</h3>
+      <p class="world-desc">Dein Wissen. Dein Weg. Deine Gemeinschaft. Zertifizierte Ausbildungen, strukturierte Lernpfade — ein Ort für alle Praktiker die sich nicht allein auf den Weg machen wollen.</p>
+      <span class="world-link"><span class="world-link-line"></span>Coming Soon</span>
+    </div>
+    <div class="world-card reveal" style="transition-delay:0.3s">
+      <div class="world-num">— 03</div>
+      <span class="world-tag">Für Unternehmen</span>
+      <h3 class="world-title">Human Resonanz B2B</h3>
+      <p class="world-desc">Die stärksten Organisationen der Zukunft wachsen nicht durch mehr Kontrolle — sondern durch Menschen die verstehen wer sie sind. Energetische Intelligenz. Skaliert.</p>
+      <span class="world-link"><span class="world-link-line"></span>In Entwicklung</span>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="about" id="ueber">
+  <div class="about-visual">
+    <div class="about-ring"></div>
+    <div class="about-ring2"></div>
+    <img src="Firmenlogo_SD_202603removebgpreview.png" alt="Human Resonanz">
+  </div>
+  <div class="about-content reveal">
+    <span class="section-label">Der Architekt</span>
+    <h2 class="about-title">Zwei Welten.<br>Ein <em>Mensch</em>.<br>Eine Plattform.</h2>
+    <p class="about-text">Struktur u

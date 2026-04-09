@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Praktiker finden — Human Resonanz Netzwerk</title>
+<meta name="description" content="Finde zertifizierte Energetiker, Coaches und Therapeuten in deiner Nähe. Das Human Resonanz Netzwerk verbindet Praktiker und Klienten.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --black: #080808;
+    --black2: #0F0F0F;
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --white: #F5F0E8;
+    --white-mid: #9A9080;
+    --white-soft: #3A3530;
+    --border: rgba(201,168,76,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'Raleway', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; min-height: 100vh; }
+
+  .cursor { width: 5px; height: 5px; background: var(--gold); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+  .cursor-ring { width: 28px; height: 28px; border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all 0.12s ease; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; padding: 24px 64px; display: flex; justify-content: space-between; align-items: center; background: rgba(8,8,8,0.97); border-bottom: 1px solid var(--border); }
+  .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+  .nav-logo img { width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(0 0 6px rgba(201,168,76,0.3)); }
+  .nav-logo-text { font-size: 11px; font-weight: 500; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; }
+  .nav-back { font-size: 10px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--white-mid); text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 8px; }
+  .nav-back:hover { color: var(--gold); }
+  .nav-back::before { content: '←'; }
+  .nav-cta { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,0.3); padding-bottom: 2px; transition: all 0.3s; }
+  .nav-cta:hover { color: var(--gold-light); }
+
+  .hero-netz { padding: 140px 64px 60px; text-align: center; position: relative; }
+  .hero-netz::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,168,76,0.04) 0%, transparent 70%); pointer-events: none; }
+  .hero-label { font-size: 10px; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 5vw, 64px); font-weight: 300; line-height: 1.15; margin-bottom: 16px; }
+  .hero-sub { font-size: 14px; font-weight: 300; color: var(--white-mid); line-height: 1.9; max-width: 520px; margin: 0 auto 48px; }
+
+  .search-bar { max-width: 700px; margin: 0 auto 20px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .search-input { flex: 1; min-width: 200px; background: var(--black2); border: 1px solid var(--border); color: var(--white); font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 300; padding: 14px 20px; outline: none; transition: border 0.3s; }
+  .search-input::placeholder { color: var(--white-soft); }
+  .search-input:focus { border-color: rgba(201,168,76,0.4); }
+  .search-select { background: var(--black2); border: 1px solid var(--border); color: var(--white-mid); font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 300; padding: 14px 20px; outline: none; cursor: pointer; transition: border 0.3s; appearance: none; min-width: 180px; }
+  .search-select:focus { border-color: rgba(201,168,76,0.4); }
+  .search-select option { background: var(--black2); }
+  .search-btn { background: none; border: 1px solid var(--gold); color: var(--gold); font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; padding: 14px 32px; cursor: pointer; transition: all 0.3s; }
+  .search-btn:hover { background: rgba(201,168,76,0.08); }
+
+  .count-line { text-align: center; font-size: 12px; color: var(--white-soft); letter-spacing: 2px; margin-bottom: 32px; }
+  .count-line span { color: var(--gold); }
+
+  .main-layout { display: grid; grid-template-columns: 1fr 380px; gap: 0; max-width: 1400px; margin: 0 auto; padding: 0 64px 80px; }
+
+  #netzwerk-map { height: 600px; background: #0a0a0a; position: sticky; top: 80px; border: 1px solid var(--border); }
+  .leaflet-container { background: #0a0a0a; }
+  .leaflet-tile { filter: brightness(0.9) saturate(0.7); }
+
+  .results-panel { padding-left: 24px; overflow-y: auto; max-height: 600px; }
+  .results-panel::-webkit-scrollbar { width: 3px; }
+  .results-panel::-webkit-scrollbar-track { background: var(--black2); }
+  .results-panel::-webkit-scrollbar-thumb { background: var(--white-soft); }
+
+  .praktiker-card { background: var(--black2); border: 1px solid var(--border); padding: 24px; margin-bottom: 1px; cursor: pointer; transition: background 0.3s, border-color 0.3s; position: relative; }
+  .praktiker-card:hover, .praktiker-card.aktiv { background: #141210; border-color: rgba(201,168,76,0.3); }
+  .praktiker-card.aktiv::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--gold); }
+  .pk-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--white); margin-bottom: 4px; }
+  .pk-ort { font-size: 11px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+  .pk-methoden { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .pk-tag { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--white-mid); border: 1px solid var(--white-soft); padding: 3px 8px; }
+  .pk-text { font-size: 13px; font-weight: 300; color: var(--white-mid); line-height: 1.7; margin-bottom: 14px; }
+  .pk-actions { display: flex; gap: 12px; align-items: center; }
+  .pk-kontakt { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); background: none; border: 1px solid rgba(201,168,76,0.3); padding: 8px 16px; cursor: pointer; font-family: 'Raleway', sans-serif; transition: all 0.3s; text-decoration: none; display: inline-block; }
+  .pk-kontakt:hover { background: rgba(201,168,76,0.08); border-color: var(--gold); }
+  .pk-web { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--white-soft); text-decoration: none; transition: color 0.3s; }
+  .pk-web:hover { color: var(--white-mid); }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--white-soft); }
+  .empty-state p { font-size: 14px; line-height: 2; }
+  .empty-state em { color: var(--gold); font-style: normal; }
+
+  .loading-state { text-align: center; padding: 40px; color: var(--white-soft); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(8,8,8,0.97); z-index: 600; display: flex; align-items: center; justify-content: center; padding: 40px; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal-kontakt { max-width: 520px; width: 100%; background: var(--black2); border: 1px solid var(--border); padding: 56px; position: relative; transform: translateY(16px); transition: transform 0.4s; }
+  .modal-overlay.open .modal-kontakt { transform: translateY(0); }
+  .modal-close { position: absolute; top: 24px; right: 28px; background: none; border: none; color: var(--white-mid); cursor: pointer; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; font-family: 'Raleway', sans-serif; transition: color 0.3s; border-bottom: 1px solid rgba(201,168,76,0.2); padding-bottom: 2px; }
+  .modal-close:hover { color: var(--gold); }
+  .modal-kontakt h3 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; margin-bottom: 6px; }
+  .modal-kontakt .sub { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; display: block; }
+  .form-group { margin-bottom: 16px; }
+  .form-group input, .form-group textarea { width: 100%; background: var(--black); border: 1px solid var(--border); color: var(--white); font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 300; padding: 14px 16px; outline: none; transition: border 0.3s; resize: none; }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: var(--white-soft); }
+  .form-group input:focus, .form-group textarea:focus { border-color: rgba(201,168,76,0.4); }
+  .form-submit { width: 100%; background: none; border: 1px solid var(--gold); color: var(--gold); font-family: 'Raleway', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; padding: 16px; cursor: pointer; transition: all 0.3s; margin-top: 8px; }
+  .form-submit:hover { background: rgba(201,168,76,0.08); }
+  .form-notice { font-size: 11px; color: var(--white-soft); margin-top: 12px; line-height: 1.7; text-align: center; }
+  .form-success { text-align: center; padding: 20px 0; }
+  .form-success p { font-size: 14px; color: var(--white-mid); line-height: 2; }
+  .form-success em { color: var(--gold); font-style: normal; }
+
+  .mitmachen { padding: 80px 64px; text-align: center; border-top: 1px solid var(--border); margin-top: 40px; }
+  .mitmachen h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 3.5vw, 44px); font-weight: 300; margin-bottom: 16px; }
+  .mitmachen p { font-size: 14px; color: var(--white-mid); line-height: 2; max-width: 480px; margin: 0 auto 36px; }
+  .btn-gold { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); text-decoration: none; border: 1px solid rgba(201,168,76,0.4); padding: 16px 40px; transition: all 0.3s; }
+  .btn-gold:hover { background: rgba(201,168,76,0.08); border-color: var(--gold); }
+
+  footer-netz { display: block; text-align: center; padding: 32px 64px; border-top: 1px solid rgba(201,168,76,0.06); font-size: 10px; color: rgba(90,85,80,0.6); letter-spacing: 1px; }
+  footer-netz a { color: rgba(90,85,80,0.8); text-decoration: none; margin: 0 12px; transition: color 0.3s; }
+  footer-netz a:hover { color: var(--gold); }
+
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .hero-netz { padding: 120px 24px 40px; }
+    .main-layout { grid-template-columns: 1fr; padding: 0 24px 60px; }
+    #netzwerk-map { position: relative; top: 0; height: 350px; }
+    .results-panel { padding-left: 0; padding-top: 16px; max-height: none; }
+    .mitmachen { padding: 60px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="Firmenlogo_SD_202603-removebg-preview.png" alt="Human Resonanz">
+    <span class="nav-logo-text">Human Resonanz</span>
+  </a>
+  <a href="index.html" class="nav-back">Zurück zur Homepage</a>
+  <a href="https://lichtkern.vercel.app" class="nav-cta">Lichtkern App</a>
+</nav>
+
+<div class="hero-netz">
+  <p class="hero-label">Das Netzwerk</p>
+  <h1 class="hero-title">Finde deinen Praktiker</h1>
+  <p class="hero-sub">Alle Einträge sind verifizierte Lichtkern-Nutzer — Energetiker, Coaches und Therapeuten die mit Struktur und Bewusstsein arbeiten.</p>
+
+  <div class="search-bar">
+    <input type="text" class="search-input" id="such-ort" placeholder="Stadt oder PLZ..." oninput="filtereProfile()">
+    <select class="search-select" id="such-methode" onchange="filtereProfile()">
+      <option value="">Alle Methoden</option>
+      <option value="Humanenergetik">Humanenergetik</option>
+      <option value="Coaching">Coaching</option>
+      <option value="Energetik">Energetik</option>
+      <option value="Human Design">Human Design</option>
+      <option value="Therapie">Therapie</option>
+      <option value="Heilpraktiker">Heilpraktiker</option>
+      <option value="Astrologie">Astrologie</option>
+    </select>
+  </div>
+  <p class="count-line" id="count-line">Lade Netzwerk...</p>
+</div>
+
+<div class="main-layout">
+  <div id="netzwerk-map"></div>
+  <div class="results-panel" id="results-panel">
+    <div class="loading-state">Lade Profile...</div>
+  </div>
+</div>
+
+<section class="mitmachen">
+  <h2>Teil des Netzwerks werden</h2>
+  <p>Du bist Energetiker, Coach oder Therapeut und nutzt Lichtkern? Aktiviere dein öffentliches Profil direkt in der App.</p>
+  <a href="https://lichtkern.vercel.app" class="btn-gold">Lichtkern öffnen → Einstellungen → HR Netzwerk</a>
+</section>
+
+<footer-netz>
+  <a href="index.html">Human Resonanz</a>
+  <a href="index.html#impressum" onclick="window.location='index.html';return false;">Impressum</a>
+  <a href="index.html#datenschutz" onclick="window.location='index.html';return false;">Datenschutz</a>
+  <br><br>© 2026 Human Resonanz · Alle Rechte vorbehalten
+</footer-netz>
+
+<div class="modal-overlay" id="kontakt-modal" onclick="if(event.target===this)schliesseModal()">
+  <div class="modal-kontakt">
+    <button class="modal-close" onclick="schliesseModal()">✕ Schließen</button>
+    <h3 id="modal-name">Praktiker kontaktieren</h3>
+    <span class="sub" id="modal-ort"></span>
+    <div id="modal-form-wrap">
+      <div class="form-group">
+        <input type="text" id="k-name" placeholder="Dein Name">
+      </div>
+      <div class="form-group">
+        <input type="email" id="k-email" placeholder="Deine E-Mail">
+      </div>
+      <div class="form-group">
+        <textarea id="k-nachricht" rows="5" placeholder="Deine Nachricht..."></textarea>
+      </div>
+      <button class="form-submit" onclick="sendeKontakt()">Nachricht senden</button>
+      <p class="form-notice">Deine Nachricht wird vertraulich weitergeleitet. Deine E-Mail wird nicht gespeichert.</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDPxV2D36zoCawfSM4C-x3jlcW-Pu5L1n4",
+    authDomain: "lichtkern-43757.firebaseapp.com",
+    projectId: "lichtkern-43757",
+    storageBucket: "lichtkern-43757.firebasestorage.app",
+    messagingSenderId: "72774063015",
+    appId: "1:72774063015:web:4e9457a91d6ad49f1f5c82"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const goldIcon = L.divIcon({
+    className: '',
+    html: `<div style="width:10px;height:10px;background:#C9A84C;border-radius:50%;border:2px solid #080808;box-shadow:0 0 10px rgba(201,168,76,0.6);"></div>`,
+    iconSize: [10, 10],
+    iconAnchor: [5, 5]
+  });
+
+  const goldIconAktiv = L.divIcon({
+    className: '',
+    html: `<div style="width:14px;height:14px;background:#E8C96A;border-radius:50%;border:2px solid #080808;box-shadow:0 0 16px rgba(201,168,76,0.9);"></div>`,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7]
+  });
+
+  const map = L.map('netzwerk-map', { zoomControl: true }).setView([51.1657, 10.4515], 6);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 18
+  }).addTo(map);
+
+  let alleProfile = [];
+  let sichtbareProfile = [];
+  let marker = {};
+  let aktiverMarker = null;
+
+  async function ladeProfile() {
+    try {
+      const q = query(collection(db, "netzwerk_profile"), where("sichtbar", "==", true));
+      const snap = await getDocs(q);
+      alleProfile = [];
+      snap.forEach(doc => {
+        const d = doc.data();
+        if (d.lat && d.lng) alleProfile.push(d);
+      });
+      zeigeProfile(alleProfile);
+    } catch(e) {
+      document.getElementById('results-panel').innerHTML = `<div class="empty-state"><p>Fehler beim Laden.<br>Bitte Seite neu laden.</p></div>`;
+      document.getElementById('count-line').textContent = '';
+    }
+  }
+
+  function zeigeProfile(profile) {
+    sichtbareProfile = profile;
+    Object.values(marker).forEach(m => map.removeLayer(m));
+    marker = {};
+
+    const panel = document.getElementById('results-panel');
+    const countLine = document.getElementById('count-line');
+
+    if (profile.length === 0) {
+      panel.innerHTML = `<div class="empty-state"><p>Keine Praktiker gefunden.<br>Passe deine Suche an oder<br><em>werde selbst Teil des Netzwerks.</em></p></div>`;
+      countLine.innerHTML = `<span>0</span> Praktiker gefunden`;
+      return;
+    }
+
+    countLine.innerHTML = `<span>${profile.length}</span> Praktiker im Netzwerk`;
+
+    panel.innerHTML = profile.map((p, i) => `
+      <div class="praktiker-card" id="card-${i}" onclick="aktiviereKarte(${i})">
+        <div class="pk-name">${p.name || 'Unbekannt'}</div>
+        <div class="pk-ort">📍 ${p.stadt || ''}${p.plz ? ' · ' + p.plz : ''}</div>
+        ${p.methoden && p.methoden.length > 0 ? `<div class="pk-methoden">${p.methoden.map(m => `<span class="pk-tag">${m}</span>`).join('')}</div>` : ''}
+        ${p.kurztext ? `<div class="pk-text">${p.kurztext}</div>` : ''}
+        <div class="pk-actions">
+          <button class="pk-kontakt" onclick="event.stopPropagation();oeffneKontakt('${(p.name||'').replace(/'/g,"\\'")}','${(p.stadt||'').replace(/'/g,"\\'")}','${p.uid||''}')">Kontakt aufnehmen</button>
+          ${p.website ? `<a class="pk-web" href="${p.website}" target="_blank" onclick="event.stopPropagation()">Website →</a>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    profile.forEach((p, i) => {
+      if (!p.lat || !p.lng) return;
+      const tooltip = `<div style="background:#0F0F0F;border:1px solid rgba(201,168,76,0.3);padding:10px 14px;font-family:'Raleway',sans-serif;"><div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:#F5F0E8;margin-bottom:4px;">${p.name||''}</div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;">${p.stadt||''}</div></div>`;
+      const m = L.marker([p.lat, p.lng], { icon: goldIcon })
+        .addTo(map)
+        .bindTooltip(tooltip, { className: 'hr-tooltip', permanent: false, direction: 'top', offset: [0, -8] });
+      m.on('click', () => aktiviereKarte(i));
+      marker[i] = m;
+    });
+
+    if (profile.length > 0 && profile[0].lat) {
+      const bounds = L.latLngBounds(profile.filter(p => p.lat).map(p => [p.lat, p.lng]));
+      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+    }
+  }
+
+  window.aktiviereKarte = function(i) {
+    document.querySelectorAll('.praktiker-card').forEach(c => c.classList.remove('aktiv'));
+    const card = document.getElementById(`card-${i}`);
+    if (card) { card.classList.add('aktiv'); card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    if (aktiverMarker !== null && marker[aktiverMarker]) marker[aktiverMarker].setIcon(goldIcon);
+    if (marker[i]) { marker[i].setIcon(goldIconAktiv); map.setView([sichtbareProfile[i].lat, sichtbareProfile[i].lng], 10, { animate: true }); }
+    aktiverMarker = i;
+  };
+
+  window.filtereProfile = function() {
+    const ort = document.getElementById('such-ort').value.toLowerCase().trim();
+    const methode = document.getElementById('such-methode').value;
+    const gefiltert = alleProfile.filter(p => {
+      const ortMatch = !ort || (p.stadt||'').toLowerCase().includes(ort) || (p.plz||'').includes(ort);
+      const methodeMatch = !methode || (p.methoden && p.methoden.includes(methode));
+      return ortMatch && methodeMatch;
+    });
+    zeigeProfile(gefiltert);
+  };
+
+  let aktiverKontaktUid = '';
+  window.oeffneKontakt = function(name, ort, uid) {
+    aktiverKontaktUid = uid;
+    document.getElementById('modal-name').textContent = name;
+    document.getElementById('modal-ort').textContent = ort;
+    document.getElementById('modal-form-wrap').innerHTML = `
+      <div class="form-group"><input type="text" id="k-name" placeholder="Dein Name"></div>
+      <div class="form-group"><input type="email" id="k-email" placeholder="Deine E-Mail"></div>
+      <div class="form-group"><textarea id="k-nachricht" rows="5" placeholder="Deine Nachricht..."></textarea></div>
+      <button class="form-submit" onclick="sendeKontakt()">Nachricht senden</button>
+      <p class="form-notice">Deine Nachricht wird vertraulich weitergeleitet. Deine E-Mail wird nicht gespeichert.</p>
+    `;
+    document.getElementById('kontakt-modal').classList.add('open');
+  };
+
+  window.sendeKontakt = async function() {
+    const name = document.getElementById('k-name').value.trim();
+    const email = document.getElementById('k-email').value.trim();
+    const nachricht = document.getElementById('k-nachricht').value.trim();
+    if (!name || !email || !nachricht) { alert('Bitte alle Felder ausfüllen.'); return; }
+    try {
+      await fetch('/api/kontakt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ praktiker_uid: aktiverKontaktUid, name, email, nachricht })
+      });
+    } catch(e) {}
+    document.getElementById('modal-form-wrap').innerHTML = `
+      <div class="form-success">
+        <p>Nachricht gesendet.<br><em>Der Praktiker wird sich bei dir melden.</em></p>
+      </div>
+    `;
+  };
+
+  window.schliesseModal = function() {
+    document.getElementById('kontakt-modal').classList.remove('open');
+  };
+
+  ladeProfile();
+</script>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cursor.style.left=mx+'px'; cursor.style.top=my+'px'; });
+  (function ac(){ rx+=(mx-rx)*0.1; ry+=(my-ry)*0.1; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(ac); })();
+</script>
+</body>
+</html>

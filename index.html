@@ -22,7 +22,7 @@
 
   .cursor { width: 5px; height: 5px; background: var(--gold); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
   .cursor-ring { width: 28px; height: 28px; border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all 0.12s ease; }
-  #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.55; }
+  #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.65; }
 
   nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 32px 64px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(8,8,8,0.98), transparent); }
   .nav-logo { display: flex; align-items: center; gap: 16px; text-decoration: none; }
@@ -115,7 +115,7 @@
   .modal-close:hover { color: var(--gold); border-color: var(--gold); }
   /* BILDTAUSCH: img src unten ändern — nach remove.bg Freisteller: z.B. portrait-freisteller.png */
   .modal-portrait { position: relative; overflow: hidden; width: 160px; height: 220px; }
-  .modal-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top center; filter: brightness(0.12) contrast(1.3) sepia(0.2); display: block; }
+  .modal-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top center; filter: brightness(0.55) contrast(1.2) sepia(0.15); display: block; }
   .modal-portrait::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 45%, var(--black2) 95%); pointer-events: none; }
   .modal-portrait::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, transparent 60%, var(--black2) 100%); pointer-events: none; z-index: 1; }
   .modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--white); margin-bottom: 6px; }
@@ -336,32 +336,54 @@
   resize();
   window.addEventListener('resize', resize);
 
-  const particles = Array.from({length:110}, () => ({
-    x: Math.random()*window.innerWidth,
-    y: Math.random()*window.innerHeight,
-    size: Math.random()*1.1+0.2,
-    sx: (Math.random()-0.5)*0.14,
-    sy: (Math.random()-0.5)*0.12-0.04,
-    op: Math.random()*0.45+0.08,
-    ph: Math.random()*Math.PI*2,
-    ps: 0.005+Math.random()*0.009,
-    gold: Math.random()>0.72
+  function drawStar(cx, cy, r, o, gold) {
+    const spikes = 4, inner = r * 0.38;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(Math.PI / 4);
+    ctx.beginPath();
+    for (let i = 0; i < spikes * 2; i++) {
+      const radius = i % 2 === 0 ? r : inner;
+      const angle = (i * Math.PI) / spikes;
+      i === 0 ? ctx.moveTo(Math.cos(angle)*radius, Math.sin(angle)*radius)
+               : ctx.lineTo(Math.cos(angle)*radius, Math.sin(angle)*radius);
+    }
+    ctx.closePath();
+    ctx.fillStyle = gold ? `rgba(201,168,76,${o})` : `rgba(245,240,232,${o * 0.55})`;
+    ctx.fill();
+    // soft glow
+    if (r > 1.2) {
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = gold ? `rgba(201,168,76,${o * 0.08})` : `rgba(245,240,232,${o * 0.05})`;
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  const particles = Array.from({length: 140}, () => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    size: Math.random() * 1.1 + 0.3,
+    sx: (Math.random() - 0.5) * 0.06,
+    sy: (Math.random() - 0.5) * 0.05 - 0.015,
+    op: Math.random() * 0.45 + 0.15,
+    ph: Math.random() * Math.PI * 2,
+    ps: 0.003 + Math.random() * 0.007,
+    gold: Math.random() > 0.75
   }));
 
   (function ap(){
-    ctx.clearRect(0,0,W,H);
+    ctx.clearRect(0, 0, W, H);
     particles.forEach(p => {
-      p.ph+=p.ps;
-      const o = p.op*(0.65+0.35*Math.sin(p.ph));
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-      ctx.fillStyle = p.gold ? `rgba(201,168,76,${o})` : `rgba(245,240,232,${o*0.35})`;
-      ctx.fill();
-      p.x+=p.sx; p.y+=p.sy;
-      if(p.x<-5) p.x=W+5;
-      if(p.x>W+5) p.x=-5;
-      if(p.y<-5) p.y=H+5;
-      if(p.y>H+5) p.y=-5;
+      p.ph += p.ps;
+      const o = p.op * (0.5 + 0.5 * Math.sin(p.ph));
+      drawStar(p.x, p.y, p.size, o, p.gold);
+      p.x += p.sx; p.y += p.sy;
+      if(p.x < -5) p.x = W + 5;
+      if(p.x > W + 5) p.x = -5;
+      if(p.y < -5) p.y = H + 5;
+      if(p.y > H + 5) p.y = -5;
     });
     requestAnimationFrame(ap);
   })();

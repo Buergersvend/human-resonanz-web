@@ -243,15 +243,44 @@
   let marker = {};
   let aktiverMarker = null;
 
+  async function geocodiere(plz, stadt) {
+    try {
+      const s = encodeURIComponent((plz||'') + ' ' + (stadt||'') + ' Germany');
+      const res = await fetch('https://nominatim.openstreetmap.org/search?q=' + s + '&format=json&limit=1&countrycodes=de', {
+        headers: { 'User-Agent': 'HumanResonanz/1.0' }
+      });
+      const data = await res.json();
+      if (data && data[0]) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    } catch(e) {}
+    return null;
+  }
+
   async function ladeProfile() {
     try {
       const q = query(collection(db, "netzwerk_profile"), where("sichtbar", "==", true));
       const snap = await getDocs(q);
       alleProfile = [];
+      const ohneKoords = [];
+
       snap.forEach(doc => {
         const d = doc.data();
-        if (d.lat && d.lng) alleProfile.push(d);
+        if (d.lat && d.lng) {
+          alleProfile.push(d);
+        } else {
+          ohneKoords.push(d);
+        }
       });
+
+      // Geocoding fuer Profile ohne Koordinaten (Nominatim Fair-Use: 1 req/s)
+      for (const p of ohneKoords) {
+        if (p.plz || p.stadt) {
+          const koords = await geocodiere(p.plz, p.stadt);
+          if (koords) { p.lat = koords.lat; p.lng = koords.lng; }
+          await new Promise(r => setTimeout(r, 1100));
+        }
+        alleProfile.push(p);
+      }
+
       zeigeProfile(alleProfile);
     } catch(e) {
       document.getElementById('results-panel').innerHTML = `<div class="empty-state"><p>Fehler beim Laden.<br>Bitte Seite neu laden.</p></div>`;

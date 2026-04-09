@@ -16,121 +16,72 @@
     --white-soft: #3A3530;
     --border: rgba(201,168,76,0.12);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'Raleway', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
 
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'Raleway', sans-serif;
-    font-weight: 300;
-    overflow-x: hidden;
-    cursor: none;
-  }
+  .cursor { width: 5px; height: 5px; background: var(--gold); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+  .cursor-ring { width: 28px; height: 28px; border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all 0.12s ease; }
+  #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.55; }
 
-  .cursor {
-    width: 5px; height: 5px;
-    background: var(--gold);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-  }
-  .cursor-ring {
-    width: 28px; height: 28px;
-    border: 1px solid rgba(201,168,76,0.3);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: all 0.12s ease;
-  }
-
-  nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 32px 64px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(to bottom, rgba(8,8,8,0.98), transparent);
-  }
-
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 32px 64px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(8,8,8,0.98), transparent); }
   .nav-logo { display: flex; align-items: center; gap: 16px; text-decoration: none; }
   .nav-logo img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(201,168,76,0.3)); transition: filter 0.4s; }
   .nav-logo:hover img { filter: drop-shadow(0 0 16px rgba(201,168,76,0.6)); }
   .nav-logo-text { font-size: 11px; font-weight: 500; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; }
-
   .nav-links { display: flex; gap: 48px; list-style: none; }
   .nav-links a { font-size: 10px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--white-mid); text-decoration: none; transition: color 0.3s; }
   .nav-links a:hover { color: var(--white); }
-
   .nav-cta { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,0.3); padding-bottom: 2px; transition: all 0.3s; }
   .nav-cta:hover { color: var(--gold-light); border-color: var(--gold-light); }
 
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 140px 64px 100px; text-align: center; position: relative; overflow: hidden;
-  }
-  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(201,168,76,0.04) 0%, transparent 70%); pointer-events: none; }
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 140px 64px 100px; text-align: center; position: relative; overflow: hidden; z-index: 1; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%); pointer-events: none; }
+  .hero-symbol { position: relative; width: 140px; height: 140px; margin-bottom: 64px; animation: breathe 8s ease-in-out infinite; z-index: 2; }
+  .hero-symbol img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 24px rgba(201,168,76,0.4)) drop-shadow(0 0 60px rgba(201,168,76,0.15)); }
+  .hero-symbol-ring { position: absolute; inset: -24px; border: 1px solid rgba(201,168,76,0.1); border-radius: 50%; animation: spin 30s linear infinite; }
+  .hero-symbol-ring2 { position: absolute; inset: -50px; border: 1px solid rgba(201,168,76,0.04); border-radius: 50%; animation: spin 55s linear infinite reverse; }
+  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
 
-  .hero-symbol { position: relative; width: 140px; height: 140px; margin-bottom: 64px; animation: breathe 8s ease-in-out infinite; }
-  .hero-symbol img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 24px rgba(201,168,76,0.35)) drop-shadow(0 0 60px rgba(201,168,76,0.1)); }
-  .hero-symbol-ring { position: absolute; inset: -24px; border: 1px solid rgba(201,168,76,0.08); border-radius: 50%; animation: spin 30s linear infinite; }
-
-  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .hero-label { font-size: 10px; font-weight: 400; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; opacity: 0; animation: fadeUp 1.2s 0.4s forwards; }
-
-  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 8vw, 110px); font-weight: 300; line-height: 1.15; margin-bottom: 40px; opacity: 0; animation: fadeUp 1.2s 0.6s forwards; }
+  .hero-label { font-size: 10px; font-weight: 400; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; opacity: 0; animation: fadeUp 1.2s 0.4s forwards; z-index: 2; position: relative; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 8vw, 110px); font-weight: 300; line-height: 1.15; margin-bottom: 40px; opacity: 0; animation: fadeUp 1.2s 0.6s forwards; z-index: 2; position: relative; }
   .hero-title .line { display: block; }
   .hero-title .line-gold { color: var(--gold); font-style: italic; }
   .hero-title .line-dim { color: var(--white-mid); }
-
-  .hero-divider { width: 1px; height: 60px; background: linear-gradient(to bottom, var(--gold), transparent); margin: 0 auto 40px; opacity: 0; animation: fadeIn 1.2s 0.8s forwards; }
-
-  .hero-subtitle { font-size: 15px; font-weight: 300; line-height: 2; color: var(--white-mid); max-width: 480px; margin: 0 auto 56px; opacity: 0; animation: fadeUp 1.2s 1s forwards; }
-
-  .hero-ctas { display: flex; gap: 24px; justify-content: center; opacity: 0; animation: fadeUp 1.2s 1.2s forwards; }
-
+  .hero-divider { width: 1px; height: 60px; background: linear-gradient(to bottom, var(--gold), transparent); margin: 0 auto 40px; opacity: 0; animation: fadeIn 1.2s 0.8s forwards; z-index: 2; position: relative; }
+  .hero-subtitle { font-size: 15px; font-weight: 300; line-height: 2; color: var(--white-mid); max-width: 480px; margin: 0 auto 56px; opacity: 0; animation: fadeUp 1.2s 1s forwards; z-index: 2; position: relative; }
+  .hero-ctas { display: flex; gap: 24px; justify-content: center; opacity: 0; animation: fadeUp 1.2s 1.2s forwards; z-index: 2; position: relative; }
   .btn-primary { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--black); background: var(--gold); padding: 16px 40px; text-decoration: none; transition: all 0.4s; }
-  .btn-primary:hover { background: var(--gold-light); box-shadow: 0 0 32px rgba(201,168,76,0.25); }
-
+  .btn-primary:hover { background: var(--gold-light); box-shadow: 0 0 40px rgba(201,168,76,0.3); }
   .btn-ghost { font-size: 10px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--white-mid); background: transparent; border: 1px solid var(--white-soft); padding: 16px 40px; text-decoration: none; transition: all 0.4s; }
   .btn-ghost:hover { color: var(--white); border-color: var(--white-mid); }
-
-  .hero-scroll { position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; animation: fadeIn 1.2s 1.8s forwards; }
+  .hero-scroll { position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; animation: fadeIn 1.2s 1.8s forwards; z-index: 2; }
   .hero-scroll span { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--white-soft); }
   .scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom, rgba(201,168,76,0.6), transparent); animation: pulse 2.5s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
-  .rule { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
+  .rule { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); position: relative; z-index: 1; }
 
-  .intro { padding: 140px 64px; max-width: 800px; margin: 0 auto; text-align: center; }
+  .intro { padding: 140px 64px; max-width: 800px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
   .section-label { font-size: 9px; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 40px; display: block; }
   .intro-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(22px, 2.8vw, 32px); font-weight: 300; line-height: 1.7; color: var(--white-mid); font-style: italic; }
   .intro-text strong { color: var(--white); font-style: normal; font-weight: 400; }
   .intro-text .gold { color: var(--gold); font-style: normal; }
 
-  .worlds { padding: 80px 64px 160px; max-width: 1400px; margin: 0 auto; }
+  .worlds { padding: 80px 64px 160px; max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
   .worlds-header { text-align: center; margin-bottom: 100px; }
   .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 5vw, 64px); font-weight: 300; line-height: 1.1; margin-bottom: 20px; }
   .section-subtitle { font-size: 13px; font-weight: 300; color: var(--white-mid); letter-spacing: 1px; line-height: 1.8; }
-
-  .worlds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
-
-  .world-card { background: var(--black); padding: 64px 48px; position: relative; overflow: hidden; transition: background 0.5s; text-decoration: none; color: inherit; display: block; }
+  .worlds-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); }
+  .world-card { background: var(--black); padding: 64px 48px; position: relative; overflow: hidden; text-decoration: none; color: inherit; display: block; opacity: 0; transform: translateY(40px); transition: background 0.5s, opacity 0.9s ease, transform 0.9s ease; }
+  .world-card.visible { opacity: 1; transform: translateY(0); }
+  .world-card:nth-child(2) { transition-delay: 0.18s; }
   .world-card:hover { background: var(--black2); }
-  .world-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 0.5s ease; }
+  .world-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 0.6s ease; }
   .world-card:hover::after { transform: scaleX(1); }
-
   .world-num { font-family: 'Cormorant Garamond', serif; font-size: 11px; font-weight: 300; letter-spacing: 4px; color: var(--white-soft); margin-bottom: 48px; }
   .world-tag { font-size: 9px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; display: block; }
   .world-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 2.5vw, 40px); font-weight: 300; line-height: 1.2; margin-bottom: 24px; color: var(--white); }
@@ -140,45 +91,51 @@
   .world-link-line { display: inline-block; width: 24px; height: 1px; background: var(--gold); transition: width 0.4s; }
   .world-card:hover .world-link-line { width: 40px; }
 
-  .about { padding: 160px 64px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 120px; align-items: center; }
-  .about-visual { position: relative; display: flex; align-items: center; justify-content: center; }
-  .about-visual img { width: 280px; height: 280px; object-fit: contain; position: relative; z-index: 2; filter: drop-shadow(0 0 40px rgba(201,168,76,0.2)); }
-  .about-ring { position: absolute; width: 340px; height: 340px; border: 1px solid var(--border); border-radius: 50%; animation: spin 40s linear infinite; }
-  .about-ring2 { position: absolute; width: 420px; height: 420px; border: 1px solid rgba(201,168,76,0.04); border-radius: 50%; animation: spin 60s linear infinite reverse; }
+  .about { padding: 160px 64px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 120px; align-items: center; position: relative; z-index: 1; }
+  .about-visual { display: flex; align-items: center; justify-content: center; position: relative; }
+  .about-visual img { width: 200px; height: 200px; object-fit: contain; filter: drop-shadow(0 0 30px rgba(201,168,76,0.25)); animation: breathe 10s ease-in-out infinite; }
+  .about-ring { position: absolute; width: 280px; height: 280px; border: 1px solid rgba(201,168,76,0.06); border-radius: 50%; animation: spin 40s linear infinite; }
+  .about-ring2 { position: absolute; width: 360px; height: 360px; border: 1px solid rgba(201,168,76,0.03); border-radius: 50%; animation: spin 60s linear infinite reverse; }
   .about-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 3.5vw, 52px); font-weight: 300; line-height: 1.2; margin-bottom: 32px; }
-  .about-title em { color: var(--gold); font-style: italic; }
-  .about-text { font-size: 14px; font-weight: 300; line-height: 2; color: var(--white-mid); margin-bottom: 40px; }
-  .about-creds { margin-bottom: 48px; }
-  .cred { font-size: 13px; font-weight: 300; color: var(--white-mid); padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; gap: 16px; }
-  .cred span { color: var(--gold); }
-  .about-more { background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 16px; font-size: 10px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); transition: gap 0.4s; padding: 0; }
-  .about-more:hover { gap: 24px; }
-  .about-more-line { display: inline-block; width: 32px; height: 1px; background: var(--gold); transition: width 0.4s; }
-  .about-more:hover .about-more-line { width: 48px; }
+  .about-title em { color: var(--gold); }
+  .about-text { font-size: 14px; font-weight: 300; line-height: 2; color: var(--white-mid); margin-bottom: 32px; }
+  .about-creds { display: flex; flex-direction: column; gap: 12px; margin-bottom: 48px; padding-left: 20px; border-left: 1px solid var(--border); }
+  .cred { font-size: 13px; font-weight: 300; color: var(--white-mid); }
+  .cred span { color: var(--gold); margin-right: 8px; }
+  .about-more { font-size: 10px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: gap 0.4s; padding: 0; font-family: 'Raleway', sans-serif; }
+  .about-more:hover { gap: 20px; }
+  .about-more-line { width: 24px; height: 1px; background: var(--gold); transition: width 0.4s; }
+  .about-more:hover .about-more-line { width: 40px; }
 
-  .modal-overlay { position: fixed; inset: 0; background: rgba(8,8,8,0.92); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s; padding: 24px; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(8,8,8,0.97); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 40px; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: var(--black2); border: 1px solid var(--border); max-width: 600px; width: 100%; padding: 64px; position: relative; max-height: 80vh; overflow-y: auto; }
-  .modal-close { position: absolute; top: 24px; right: 24px; background: none; border: none; color: var(--white-mid); font-size: 10px; letter-spacing: 2px; cursor: pointer; transition: color 0.3s; }
-  .modal-close:hover { color: var(--white); }
-  .modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 8px; }
-  .modal-sub { font-size: 10px; letter-spacing: 3px; color: var(--gold); display: block; margin-bottom: 40px; }
-  .modal p { font-size: 14px; font-weight: 300; line-height: 2; color: var(--white-mid); margin-bottom: 20px; }
+  .modal { max-width: 720px; width: 100%; max-height: 85vh; overflow-y: auto; background: var(--black2); border: 1px solid var(--border); padding: 64px; position: relative; transform: translateY(16px); transition: transform 0.4s; display: grid; grid-template-columns: 1fr 160px; gap: 48px; align-items: start; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-close { position: absolute; top: 28px; right: 32px; background: none; border: none; color: var(--white-mid); cursor: pointer; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; font-family: 'Raleway', sans-serif; transition: color 0.3s; border-bottom: 1px solid rgba(201,168,76,0.2); padding-bottom: 2px; }
+  .modal-close:hover { color: var(--gold); border-color: var(--gold); }
+  /* BILDTAUSCH: img src unten ändern — nach remove.bg Freisteller: z.B. portrait-freisteller.png */
+  .modal-portrait { position: relative; overflow: hidden; width: 160px; height: 220px; }
+  .modal-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top center; filter: brightness(0.12) contrast(1.3) sepia(0.2); display: block; }
+  .modal-portrait::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 45%, var(--black2) 95%); pointer-events: none; }
+  .modal-portrait::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, transparent 60%, var(--black2) 100%); pointer-events: none; z-index: 1; }
+  .modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--white); margin-bottom: 6px; }
+  .modal-sub { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; display: block; }
+  .modal p { font-size: 14px; font-weight: 300; line-height: 1.9; color: var(--white-mid); margin-bottom: 16px; }
   .modal p strong { color: var(--white); font-weight: 400; }
+  .modal p em { color: var(--gold); font-style: italic; }
 
-  footer { padding: 160px 64px 80px; text-align: center; position: relative; }
-  footer::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 1px; height: 80px; background: linear-gradient(to bottom, var(--gold), transparent); }
-  .footer-symbol { width: 48px; height: 48px; object-fit: contain; margin-bottom: 24px; filter: drop-shadow(0 0 12px rgba(201,168,76,0.3)); }
-  .footer-name { font-size: 11px; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
-  .footer-tag { font-size: 10px; letter-spacing: 3px; color: var(--white-soft); margin-bottom: 80px; }
-  .footer-cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 52px); font-weight: 300; line-height: 1.2; margin-bottom: 24px; }
-  .footer-cta-sub { font-size: 14px; font-weight: 300; line-height: 2; color: var(--white-mid); margin-bottom: 48px; }
-  .footer-meta { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin-top: 80px; margin-bottom: 40px; }
-  .footer-meta a { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--white-soft); text-decoration: none; transition: color 0.3s; }
-  .footer-meta a:hover { color: var(--white-mid); }
-  .footer-copy { font-size: 11px; color: var(--white-soft); letter-spacing: 1px; }
+  footer { padding: 120px 64px 60px; text-align: center; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+  .footer-symbol { width: 48px; height: 48px; margin: 0 auto 28px; filter: drop-shadow(0 0 8px rgba(201,168,76,0.2)); opacity: 0.6; display: block; }
+  .footer-name { font-size: 11px; font-weight: 500; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .footer-tag { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--white-soft); margin-bottom: 80px; }
+  .footer-cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 52px); font-weight: 300; line-height: 1.2; margin-bottom: 20px; }
+  .footer-cta-sub { font-size: 14px; font-weight: 300; color: var(--white-mid); line-height: 2; margin-bottom: 48px; }
+  .footer-meta { display: flex; justify-content: center; gap: 40px; margin-top: 80px; padding-top: 40px; border-top: 1px solid rgba(201,168,76,0.08); flex-wrap: wrap; }
+  .footer-meta a { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(90,85,80,0.9); text-decoration: none; transition: color 0.3s; }
+  .footer-meta a:hover { color: var(--gold); }
+  .footer-copy { margin-top: 24px; font-size: 10px; color: rgba(90,85,80,0.7); letter-spacing: 1px; }
 
-  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 1s ease, transform 1s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 900px) {
@@ -188,12 +145,14 @@
     .worlds-grid { grid-template-columns: 1fr; }
     .about { grid-template-columns: 1fr; gap: 60px; }
     .about-visual { order: -1; }
-    .modal { padding: 40px 28px; }
+    .modal { grid-template-columns: 1fr; padding: 40px 28px; }
+    .modal-portrait { display: none; }
   }
 </style>
 </head>
 <body>
 
+<canvas id="particle-canvas"></canvas>
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
@@ -213,6 +172,7 @@
 <section class="hero">
   <div class="hero-symbol">
     <div class="hero-symbol-ring"></div>
+    <div class="hero-symbol-ring2"></div>
     <img src="Firmenlogo_SD_202603removebgpreview.png" alt="Human Resonanz">
   </div>
   <p class="hero-label">Human Resonanz</p>
@@ -251,31 +211,24 @@
 
 <section class="worlds" id="lichtkern">
   <div class="worlds-header reveal">
-    <span class="section-label">Drei Ebenen — Ein Ökosystem</span>
+    <span class="section-label">Zwei Ebenen — Ein Ökosystem</span>
     <h2 class="section-title">Das System</h2>
     <p class="section-subtitle">Jede Ebene für sich stark. Zusammen unaufhaltbar.</p>
   </div>
   <div class="worlds-grid">
-    <a href="https://lichtkern.vercel.app" class="world-card reveal" style="transition-delay:0.1s">
+    <a href="https://lichtkern.vercel.app" class="world-card">
       <div class="world-num">— 01</div>
       <span class="world-tag">Für Praktiker</span>
       <h3 class="world-title">Lichtkern</h3>
-      <p class="world-desc">Deine Praxis. Endlich strukturiert. CRM, Sessiondokumentation, KI-Auswertung, Human Design und PDF-Export — alles an einem Ort. Entwickelt von einem Energetiker. Für Energetiker.</p>
+      <p class="world-desc">Deine Praxis. Endlich strukturiert. CRM, Sessiondokumentation, Resonanz-Analyse und PDF-Export — alles an einem Ort. Entwickelt von einem Energetiker. Für Energetiker.</p>
       <span class="world-link"><span class="world-link-line"></span>Zur App</span>
     </a>
-    <div class="world-card reveal" style="transition-delay:0.2s" id="akademie">
+    <div class="world-card" id="akademie">
       <div class="world-num">— 02</div>
       <span class="world-tag">Für Lernende</span>
       <h3 class="world-title">Resonanz Akademie</h3>
       <p class="world-desc">Dein Wissen. Dein Weg. Deine Gemeinschaft. Zertifizierte Ausbildungen, strukturierte Lernpfade — ein Ort für alle Praktiker die sich nicht allein auf den Weg machen wollen.</p>
       <span class="world-link"><span class="world-link-line"></span>Coming Soon</span>
-    </div>
-    <div class="world-card reveal" style="transition-delay:0.3s">
-      <div class="world-num">— 03</div>
-      <span class="world-tag">Für Unternehmen</span>
-      <h3 class="world-title">Human Resonanz B2B</h3>
-      <p class="world-desc">Die stärksten Organisationen der Zukunft wachsen nicht durch mehr Kontrolle — sondern durch Menschen die verstehen wer sie sind. Energetische Intelligenz. Skaliert.</p>
-      <span class="world-link"><span class="world-link-line"></span>In Entwicklung</span>
     </div>
   </div>
 </section>
@@ -283,12 +236,140 @@
 <div class="rule"></div>
 
 <section class="about" id="ueber">
-  <div class="about-visual">
+  <div class="about-visual reveal">
     <div class="about-ring"></div>
     <div class="about-ring2"></div>
     <img src="Firmenlogo_SD_202603removebgpreview.png" alt="Human Resonanz">
   </div>
-  <div class="about-content reveal">
+  <div class="about-content reveal" style="transition-delay:0.2s">
     <span class="section-label">Der Architekt</span>
     <h2 class="about-title">Zwei Welten.<br>Ein <em>Mensch</em>.<br>Eine Plattform.</h2>
-    <p class="about-text">Struktur u
+    <p class="about-text">Struktur und Intuition. System und Seele. Technologie und Bewusstsein. Was andere trennen, bringt Human Resonanz zusammen.</p>
+    <div class="about-creds">
+      <div class="cred"><span>—</span>Master of Technical Management (CCI)</div>
+      <div class="cred"><span>—</span>Master der Humanenergetik</div>
+    </div>
+    <button class="about-more" onclick="document.getElementById('modal').classList.add('open')">
+      <span class="about-more-line"></span>Mehr erfahren
+    </button>
+  </div>
+</section>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕ Schließen</button>
+    <div class="modal-text">
+      <h2>Sven Donath</h2>
+      <span class="modal-sub">Bewusstsein · Energie · Entwicklung</span>
+      <p>Es gibt Momente, in denen das Leben aufhört zu funktionieren — und anfängt zu sprechen.</p>
+      <p>Mein Weg führte mich durch zwei Welten die sich eigentlich ausschließen sollten. Die Welt der Zahlen, Strukturen und Verantwortung. Und die Welt des Bewusstseins, der Energie und der inneren Wahrheit.</p>
+      <p>Als <strong>Master of Technical Management (CCI)</strong> habe ich gelernt, komplexe Systeme zu führen. Als <strong>Master der Humanenergetik</strong> habe ich verstanden, was diese Systeme wirklich antreibt: der Mensch dahinter.</p>
+      <p>Human Resonanz ist die Synthese dieser beiden Welten. Kein Kompromiss. Eine Einheit.</p>
+      <p><em>Wenn ein Mensch beginnt sich selbst wirklich zu verstehen, verändert sich nicht nur sein Leben — er verändert sein Umfeld. Und genau so entsteht echte Veränderung. Mensch für Mensch.</em></p>
+    </div>
+    <div class="modal-portrait">
+      <img src="Bild_ohne_Hintergrund.png" alt="">
+    </div>
+  </div>
+</div>
+
+<footer>
+  <img src="Firmenlogo_SD_202603removebgpreview.png" alt="Human Resonanz" class="footer-symbol">
+  <div class="footer-name">Human Resonanz</div>
+  <div class="footer-tag">Bewusstsein · Energie · Entwicklung</div>
+  <h2 class="footer-cta-title reveal">Bereit für den nächsten Schritt?</h2>
+  <p class="footer-cta-sub reveal">Egal ob du eine Praxis führst oder dich weiterentwickeln willst —<br>Human Resonanz ist dein Ökosystem.</p>
+  <a href="https://lichtkern.vercel.app" class="btn-primary reveal">Jetzt starten</a>
+  <div class="footer-meta">
+    <a href="#" onclick="document.getElementById('impressum-modal').classList.add('open');return false;">Impressum</a>
+    <a href="#" onclick="document.getElementById('datenschutz-modal').classList.add('open');return false;">Datenschutz</a>
+    <a href="https://lichtkern.vercel.app">Lichtkern App</a>
+    <a href="#akademie">Akademie</a>
+    <a href="mailto:info@human-resonanz.de">Kontakt</a>
+  </div>
+  <p class="footer-copy">© 2026 Human Resonanz · Alle Rechte vorbehalten</p>
+</footer>
+
+<div class="modal-overlay" id="impressum-modal" onclick="if(event.target===this)this.classList.remove('open')" style="z-index:300;">
+  <div class="modal" style="display:block;max-width:560px;">
+    <button class="modal-close" onclick="document.getElementById('impressum-modal').classList.remove('open')">✕ Schließen</button>
+    <h2 style="margin-bottom:6px;">Impressum</h2>
+    <span class="modal-sub">Angaben gemäß § 5 TMG</span>
+    <p><strong>Sven Donath</strong><br>St.-Damian-Weg 12<br>89284 Pfaffenhofen</p>
+    <p><strong>Kontakt</strong><br>E-Mail: info@human-resonanz.de</p>
+    <p style="margin-top:24px;font-size:12px;color:var(--white-soft);">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV: Sven Donath, St.-Damian-Weg 12, 89284 Pfaffenhofen</p>
+    <p style="font-size:12px;color:var(--white-soft);">Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="datenschutz-modal" onclick="if(event.target===this)this.classList.remove('open')" style="z-index:300;">
+  <div class="modal" style="display:block;max-width:560px;max-height:85vh;overflow-y:auto;">
+    <button class="modal-close" onclick="document.getElementById('datenschutz-modal').classList.remove('open')">✕ Schließen</button>
+    <h2 style="margin-bottom:6px;">Datenschutzerklärung</h2>
+    <span class="modal-sub">Stand: April 2026</span>
+    <p><strong>Verantwortlicher</strong><br>Sven Donath, St.-Damian-Weg 12, 89284 Pfaffenhofen<br>E-Mail: info@human-resonanz.de</p>
+    <p><strong>Hosting</strong><br>Diese Website wird gehostet bei Vercel Inc., 340 Pine Street Suite 701, San Francisco, CA 94104, USA. Beim Aufruf der Website werden automatisch Server-Logfiles erfasst. Diese Daten werden nicht mit anderen Datenquellen zusammengeführt.</p>
+    <p><strong>Cookies</strong><br>Diese Website verwendet keine Tracking-Cookies und keine Analyse-Tools.</p>
+    <p><strong>Externe Links</strong><br>Die verlinkte Anwendung Lichtkern (lichtkern.vercel.app) unterliegt einer eigenen Datenschutzerklärung.</p>
+    <p><strong>Ihre Rechte</strong><br>Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung Ihrer Daten. Kontakt: info@human-resonanz.de</p>
+  </div>
+</div>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+  });
+  (function ac(){
+    rx+=(mx-rx)*0.1; ry+=(my-ry)*0.1;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(ac);
+  })();
+
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const particles = Array.from({length:110}, () => ({
+    x: Math.random()*window.innerWidth,
+    y: Math.random()*window.innerHeight,
+    size: Math.random()*1.1+0.2,
+    sx: (Math.random()-0.5)*0.14,
+    sy: (Math.random()-0.5)*0.12-0.04,
+    op: Math.random()*0.45+0.08,
+    ph: Math.random()*Math.PI*2,
+    ps: 0.005+Math.random()*0.009,
+    gold: Math.random()>0.72
+  }));
+
+  (function ap(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      p.ph+=p.ps;
+      const o = p.op*(0.65+0.35*Math.sin(p.ph));
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle = p.gold ? `rgba(201,168,76,${o})` : `rgba(245,240,232,${o*0.35})`;
+      ctx.fill();
+      p.x+=p.sx; p.y+=p.sy;
+      if(p.x<-5) p.x=W+5;
+      if(p.x>W+5) p.x=-5;
+      if(p.y<-5) p.y=H+5;
+      if(p.y>H+5) p.y=-5;
+    });
+    requestAnimationFrame(ap);
+  })();
+
+  const obs = new IntersectionObserver(e => {
+    e.forEach(el => { if(el.isIntersecting) el.target.classList.add('visible'); });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal, .world-card').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

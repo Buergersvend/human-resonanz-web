@@ -138,8 +138,24 @@
   .reveal { opacity: 0; transform: translateY(32px); transition: opacity 1s ease, transform 1s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
+
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; z-index: 101; }
+  .hamburger span { display: block; width: 22px; height: 1px; background: var(--gold); transition: all 0.3s; }
+  .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .mobile-menu { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(8,8,8,0.99); z-index: 99; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+  .mobile-menu.open { opacity: 1; pointer-events: all; }
+  .mobile-menu a { font-size: 13px; font-weight: 400; letter-spacing: 5px; text-transform: uppercase; color: var(--white-mid); text-decoration: none; transition: color 0.3s; }
+  .mobile-menu a:hover { color: var(--gold); }
+  .mobile-menu .mobile-cta { color: var(--gold); border-bottom: 1px solid rgba(201,168,76,0.3); padding-bottom: 3px; }
+
   @media (max-width: 900px) {
-    nav { padding: 24px; }
+    .hamburger { display: flex; }
+    .nav-cta { display: none; }
+  }
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
     .nav-links { display: none; }
     .hero, .intro, .worlds, .about, footer { padding-left: 24px; padding-right: 24px; }
     .worlds-grid { grid-template-columns: 1fr; }
@@ -168,7 +184,17 @@
     <li><a href="#ueber">Über</a></li>
   </ul>
   <a href="https://lichtkern.vercel.app" class="nav-cta">Zur App</a>
-</nav>
+  <button class="hamburger" id="hamburger" onclick="toggleMobile()" aria-label="Menü">
+    <span></span><span></span><span></span>
+  </button>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#lichtkern" onclick="schliessMobile()">Lichtkern</a>
+  <a href="#akademie" onclick="schliessMobile()">Akademie</a>
+  <a href="netzwerk.html" onclick="schliessMobile()">Netzwerk</a>
+  <a href="#ueber" onclick="schliessMobile()">Über</a>
+  <a href="https://lichtkern.vercel.app" class="mobile-cta">Zur App</a>
+</div>
 
 <section class="hero">
   <div class="hero-symbol">
@@ -393,6 +419,19 @@
     e.forEach(el => { if(el.isIntersecting) el.target.classList.add('visible'); });
   }, {threshold:0.12});
   document.querySelectorAll('.reveal, .world-card').forEach(el => obs.observe(el));
+
+  function toggleMobile() {
+    const btn = document.getElementById('hamburger');
+    const menu = document.getElementById('mobile-menu');
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  }
+  function schliessMobile() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobile-menu').classList.remove('open');
+    document.body.style.overflow = '';
+  }
 </script>
 </body>
 </html>

@@ -490,17 +490,40 @@
   }, {threshold:0.12});
   document.querySelectorAll('.reveal, .world-card').forEach(el => obs.observe(el));
 
-  function toggleMobile() {
+ function toggleMobile() {
     const btn = document.getElementById('hamburger');
     const menu = document.getElementById('mobile-menu');
-    btn.classList.toggle('open');
-    menu.classList.toggle('open');
-    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    const isOpen = menu.classList.contains('open');
+
+    if (isOpen) {
+      // Schließen: Scroll-Position wiederherstellen
+      const scrollY = parseInt(document.body.dataset.scrollY || '0');
+      btn.classList.remove('open');
+      menu.classList.remove('open');
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, scrollY);
+    } else {
+      // Öffnen: Aktuelle Position einfrieren ohne Sprung
+      const scrollY = window.scrollY;
+      btn.classList.add('open');
+      menu.classList.add('open');
+      document.body.dataset.scrollY = scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+    }
   }
+
   function schliessMobile() {
+    const scrollY = parseInt(document.body.dataset.scrollY || '0');
     document.getElementById('hamburger').classList.remove('open');
     document.getElementById('mobile-menu').classList.remove('open');
-    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    window.scrollTo(0, scrollY);
   }
 </script>
 </body>

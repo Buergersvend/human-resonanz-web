@@ -64,46 +64,18 @@
   .scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom, rgba(201,168,76,0.6), transparent); animation: pulse 2.5s ease-in-out infinite; }
 
   .rule { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); position: relative; z-index: 1; }
-/* Zitat-Sektion — Leitsatz der Dachmarke */
-.quote-section {
-  padding: 140px 32px;
-  text-align: center;
-  position: relative;
-  max-width: 880px;
-  margin: 0 auto;
-}
-.quote-line {
-  width: 90px;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-  margin: 0 auto;
-  opacity: 0.55;
-}
-.quote-inner {
-  padding: 64px 16px;
-}
-.quote-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(22px, 2.6vw, 32px);
-  font-weight: 300;
-  font-style: italic;
-  line-height: 1.65;
-  color: var(--white);
-  max-width: 720px;
-  margin: 0 auto 40px;
-}
-.quote-source {
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.75;
-}
-@media (max-width: 900px) {
-  .quote-section { padding: 80px 24px; }
-  .quote-inner { padding: 48px 8px; }
-}
+
+  /* Zitat-Sektion — Leitsatz der Dachmarke */
+  .quote-section { padding: 140px 32px; text-align: center; position: relative; max-width: 880px; margin: 0 auto; }
+  .quote-line { width: 90px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 0 auto; opacity: 0.55; }
+  .quote-inner { padding: 64px 16px; }
+  .quote-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(22px, 2.6vw, 32px); font-weight: 300; font-style: italic; line-height: 1.65; color: var(--white); max-width: 720px; margin: 0 auto 40px; }
+  .quote-source { font-size: 10px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); opacity: 0.75; }
+  @media (max-width: 900px) {
+    .quote-section { padding: 80px 24px; }
+    .quote-inner { padding: 48px 8px; }
+  }
+
   .intro { padding: 140px 64px; max-width: 800px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
   .section-label { font-size: 9px; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 40px; display: block; }
   .intro-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(22px, 2.8vw, 32px); font-weight: 300; line-height: 1.7; color: var(--white-mid); font-style: italic; }
@@ -178,7 +150,6 @@
   .reveal { opacity: 0; transform: translateY(32px); transition: opacity 1s ease, transform 1s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
-
   .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; z-index: 101; }
   .hamburger span { display: block; width: 22px; height: 1px; background: var(--gold); transition: all 0.3s; }
   .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
@@ -204,10 +175,10 @@
     .modal { grid-template-columns: 1fr; padding: 40px 28px; }
     .modal-portrait { display: none; }
   }
-.modal::-webkit-scrollbar { width: 4px; }
-.modal::-webkit-scrollbar-track { background: #080808; }
-.modal::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); }
-.modal::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.6); }
+  .modal::-webkit-scrollbar { width: 4px; }
+  .modal::-webkit-scrollbar-track { background: #080808; }
+  .modal::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); }
+  .modal::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.6); }
 </style>
 </head>
 <body>
@@ -347,22 +318,22 @@
       <p>Als <strong>Master of Technical Management (CCI)</strong> habe ich gelernt, komplexe Systeme zu führen. Als <strong>Master der Humanenergetik</strong> habe ich verstanden, was diese Systeme wirklich antreibt: der Mensch dahinter.</p>
       <p>Human Resonanz ist die Synthese dieser beiden Welten. Kein Kompromiss. Eine Einheit.</p>
       <p><em>Wenn ein Mensch beginnt sich selbst wirklich zu verstehen, verändert sich nicht nur sein Leben — er verändert sein Umfeld. Und genau so entsteht echte Veränderung. Mensch für Mensch.</em></p>
-<div style="margin-top:48px; padding:32px 32px 28px; border-top:1px solid rgba(201,168,76,0.15); border-bottom:1px solid rgba(201,168,76,0.15);">
-  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;">
-    <span style="font-size:9px; font-weight:400; letter-spacing:2.5px; text-transform:uppercase; color:#C9A84C; border:1px solid rgba(201,168,76,0.25); padding:5px 12px;">Manifestor · 4/6</span>
-    <span style="font-size:9px; font-weight:400; letter-spacing:2.5px; text-transform:uppercase; color:#C9A84C; border:1px solid rgba(201,168,76,0.25); padding:5px 12px;">Lebenszahl 22/4</span>
-  </div>
-  <p style="font-size:13px; font-weight:300; line-height:2.2; color:#9A9080; font-style:italic; margin-bottom:28px;">
-    Wenn du diese Zeilen liest und weißt was sie bedeuten — dann weißt du auch warum Human Resonanz so ist wie es ist.<br><br>
-    Ein Manifestor der nicht wartet bis er gefragt wird.<br>
-    Ein 4/6-Profil das durch sein eigenes Leben zur Blaupause wird.<br>
-    Eine 22 die nicht baut um zu bauen — sondern weil sie es muss.
-  </p>
-  <p style="font-size:13px; font-weight:300; line-height:1.8; color:rgba(201,168,76,0.7); font-style:italic; border-left:2px solid rgba(201,168,76,0.25); padding-left:16px; margin:0;">
-    „In dir muss brennen,<br>was du in anderen entzünden willst."<br>
-    <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(201,168,76,0.4); font-style:normal;">— Augustinus</span>
-  </p>
-</div>
+      <div style="margin-top:48px; padding:32px 32px 28px; border-top:1px solid rgba(201,168,76,0.15); border-bottom:1px solid rgba(201,168,76,0.15);">
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;">
+          <span style="font-size:9px; font-weight:400; letter-spacing:2.5px; text-transform:uppercase; color:#C9A84C; border:1px solid rgba(201,168,76,0.25); padding:5px 12px;">Manifestor · 4/6</span>
+          <span style="font-size:9px; font-weight:400; letter-spacing:2.5px; text-transform:uppercase; color:#C9A84C; border:1px solid rgba(201,168,76,0.25); padding:5px 12px;">Lebenszahl 22/4</span>
+        </div>
+        <p style="font-size:13px; font-weight:300; line-height:2.2; color:#9A9080; font-style:italic; margin-bottom:28px;">
+          Wenn du diese Zeilen liest und weißt was sie bedeuten — dann weißt du auch warum Human Resonanz so ist wie es ist.<br><br>
+          Ein Manifestor der nicht wartet bis er gefragt wird.<br>
+          Ein 4/6-Profil das durch sein eigenes Leben zur Blaupause wird.<br>
+          Eine 22 die nicht baut um zu bauen — sondern weil sie es muss.
+        </p>
+        <p style="font-size:13px; font-weight:300; line-height:1.8; color:rgba(201,168,76,0.7); font-style:italic; border-left:2px solid rgba(201,168,76,0.25); padding-left:16px; margin:0;">
+          „In dir muss brennen,<br>was du in anderen entzünden willst."<br>
+          <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(201,168,76,0.4); font-style:normal;">— Augustinus</span>
+        </p>
+      </div>
     </div>
     <div class="modal-portrait">
       <img src="Bild_ohne_Hintergrund.png" alt="">
@@ -448,7 +419,6 @@
     ctx.closePath();
     ctx.fillStyle = gold ? `rgba(201,168,76,${o})` : `rgba(245,240,232,${o * 0.55})`;
     ctx.fill();
-    // soft glow
     if (r > 1.2) {
       ctx.beginPath();
       ctx.arc(0, 0, r * 2.2, 0, Math.PI * 2);
@@ -490,26 +460,17 @@
   }, {threshold:0.12});
   document.querySelectorAll('.reveal, .world-card').forEach(el => obs.observe(el));
 
- function toggleMobile() {
+  function toggleMobile() {
     const btn = document.getElementById('hamburger');
     const menu = document.getElementById('mobile-menu');
     btn.classList.toggle('open');
     menu.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
   }
   function schliessMobile() {
     document.getElementById('hamburger').classList.remove('open');
     document.getElementById('mobile-menu').classList.remove('open');
-  }
-  }
-
-  function schliessMobile() {
-    const scrollY = parseInt(document.body.dataset.scrollY || '0');
-    document.getElementById('hamburger').classList.remove('open');
-    document.getElementById('mobile-menu').classList.remove('open');
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    window.scrollTo(0, scrollY);
+    document.body.style.overflow = '';
   }
 </script>
 </body>

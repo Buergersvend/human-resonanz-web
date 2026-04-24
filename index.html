@@ -493,27 +493,13 @@
  function toggleMobile() {
     const btn = document.getElementById('hamburger');
     const menu = document.getElementById('mobile-menu');
-    const isOpen = menu.classList.contains('open');
-
-    if (isOpen) {
-      // Schließen: Scroll-Position wiederherstellen
-      const scrollY = parseInt(document.body.dataset.scrollY || '0');
-      btn.classList.remove('open');
-      menu.classList.remove('open');
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, scrollY);
-    } else {
-      // Öffnen: Aktuelle Position einfrieren ohne Sprung
-      const scrollY = window.scrollY;
-      btn.classList.add('open');
-      menu.classList.add('open');
-      document.body.dataset.scrollY = scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-    }
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+  }
+  function schliessMobile() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobile-menu').classList.remove('open');
+  }
   }
 
   function schliessMobile() {

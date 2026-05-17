@@ -43,7 +43,7 @@
   .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 140px 64px 100px; text-align: center; position: relative; overflow: hidden; z-index: 1; }
   .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%); pointer-events: none; }
   .hero-symbol { position: relative; width: 140px; height: 140px; margin-bottom: 64px; animation: breathe 8s ease-in-out infinite; z-index: 2; }
-  .hero-symbol img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 24px rgba(201,168,76,0.4)) drop-shadow(0 0 60px rgba(201,168,76,0.15)); }
+  .hero-symbol img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 24px rgba(201,168,76,0.4)) drop-shadow(0 0 60px rgba(201,168,76,0.15)); cursor: pointer; }
   .hero-symbol-ring { position: absolute; inset: -24px; border: 1px solid rgba(201,168,76,0.1); border-radius: 50%; animation: spin 30s linear infinite; }
   .hero-symbol-ring2 { position: absolute; inset: -50px; border: 1px solid rgba(201,168,76,0.04); border-radius: 50%; animation: spin 55s linear infinite reverse; }
   @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
@@ -51,6 +51,18 @@
   @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+  @keyframes lk-shake {
+    0% { transform: translate(0,0); }
+    15% { transform: translate(-3px, 2px); }
+    30% { transform: translate(3px, -2px); }
+    45% { transform: translate(-2px, 1px); }
+    60% { transform: translate(2px, -1px); }
+    75% { transform: translate(-1px, 1px); }
+    100% { transform: translate(0,0); }
+  }
+
+  #supernova-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4; }
+  #supernova-flash { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 35%, rgba(255,240,200,0.9) 0%, rgba(201,168,76,0.3) 40%, transparent 70%); opacity: 0; pointer-events: none; z-index: 5; transition: opacity 0.08s; }
 
   .hero-label { font-size: 10px; font-weight: 400; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; opacity: 0; animation: fadeUp 1.2s 0.4s forwards; z-index: 2; position: relative; }
   .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 8vw, 110px); font-weight: 300; line-height: 1.15; margin-bottom: 40px; opacity: 0; animation: fadeUp 1.2s 0.6s forwards; z-index: 2; position: relative; }
@@ -360,10 +372,14 @@ font-size: clamp(0.95rem, 1.4vw, 1.05rem);
 </div>
 
 <section class="hero">
+  <!-- Supernova Canvas & Flash -->
+  <canvas id="supernova-canvas"></canvas>
+  <div id="supernova-flash"></div>
+
   <div class="hero-symbol">
     <div class="hero-symbol-ring"></div>
     <div class="hero-symbol-ring2"></div>
-    <img src="Firmenlogo_ohne_Hintergrund_Herz_20260414-removebg-preview.png" alt="Human Resonanz">
+    <img id="hero-logo" src="Firmenlogo_ohne_Hintergrund_Herz_20260414-removebg-preview.png" alt="Human Resonanz" onclick="fireSupernova()">
   </div>
   <p class="hero-label">Human Resonanz</p>
   <h1 class="hero-title">
@@ -637,6 +653,7 @@ font-size: clamp(0.95rem, 1.4vw, 1.05rem);
 </div>
 
 <script>
+  // ─── Custom Cursor ──────────────────────────
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
   let mx=0,my=0,rx=0,ry=0;
@@ -650,6 +667,7 @@ font-size: clamp(0.95rem, 1.4vw, 1.05rem);
     requestAnimationFrame(ac);
   })();
 
+  // ─── Background Starfield ───────────────────
   const canvas = document.getElementById('particle-canvas');
   const ctx = canvas.getContext('2d');
   let W, H;
@@ -708,33 +726,272 @@ font-size: clamp(0.95rem, 1.4vw, 1.05rem);
     requestAnimationFrame(ap);
   })();
 
+  // ─── Scroll Reveal ──────────────────────────
   const obs = new IntersectionObserver(e => {
     e.forEach(el => { if(el.isIntersecting) el.target.classList.add('visible'); });
   }, {threshold:0.12});
   document.querySelectorAll('.reveal, .world-card').forEach(el => obs.observe(el));
 
+  // ─── Mobile Menu ────────────────────────────
   function toggleMobile() {
     const btn = document.getElementById('hamburger');
     const menu = document.getElementById('mobile-menu');
     btn.classList.toggle('open');
     menu.classList.toggle('open');
-   
   }
   function schliessMobile() {
     document.getElementById('hamburger').classList.remove('open');
     document.getElementById('mobile-menu').classList.remove('open');
-   
   }
-function toggleFaq(questionEl) {
-  const item = questionEl.parentElement;
-  const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item.open').forEach(el => {
-    el.classList.remove('open');
-  });
-  if (!isOpen) {
-    item.classList.add('open');
+
+  // ─── FAQ Toggle ─────────────────────────────
+  function toggleFaq(questionEl) {
+    const item = questionEl.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
   }
-}
+
+  // ─── SUPERNOVA EFFECT ───────────────────────
+  (function() {
+    const cv = document.getElementById('supernova-canvas');
+    const sCtx = cv.getContext('2d');
+    const logo = document.getElementById('hero-logo');
+    const flash = document.getElementById('supernova-flash');
+
+    let sParticles = [], sRings = [], sRays = [], sStarfield = [];
+    let sGlow = { opacity: 0, radius: 0 };
+    let sCoreGlow = { opacity: 0 };
+    let sRunning = false;
+    let sDims = { w: 0, h: 0, cx: 0, cy: 0 };
+
+    function sAnimate() {
+      const { w, h, cx, cy } = sDims;
+      sCtx.clearRect(0, 0, w, h);
+
+      // Starfield
+      for (let i = sStarfield.length - 1; i >= 0; i--) {
+        const s = sStarfield[i];
+        s.twinkle += s.speed;
+        s.life--;
+        if (s.life <= 0) { sStarfield.splice(i, 1); continue; }
+        const a = (s.life / s.maxLife) * (0.3 + Math.sin(s.twinkle) * 0.2);
+        sCtx.beginPath();
+        sCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        sCtx.fillStyle = `rgba(201,168,76,${a})`;
+        sCtx.fill();
+      }
+
+      // Core glow
+      if (sGlow.opacity > 0) {
+        const g = sCtx.createRadialGradient(cx, cy, 0, cx, cy, sGlow.radius);
+        g.addColorStop(0, `rgba(201,168,76,${sGlow.opacity})`);
+        g.addColorStop(0.4, `rgba(201,168,76,${sGlow.opacity * 0.3})`);
+        g.addColorStop(1, "rgba(201,168,76,0)");
+        sCtx.fillStyle = g;
+        sCtx.beginPath();
+        sCtx.arc(cx, cy, sGlow.radius, 0, Math.PI * 2);
+        sCtx.fill();
+        sGlow.radius += 1.5;
+        sGlow.opacity *= 0.975;
+        if (sGlow.opacity < 0.01) sGlow.opacity = 0;
+      }
+
+      // Center afterglow
+      if (sCoreGlow.opacity > 0) {
+        const cg = sCtx.createRadialGradient(cx, cy, 0, cx, cy, 80);
+        cg.addColorStop(0, `rgba(255,240,200,${sCoreGlow.opacity * 0.4})`);
+        cg.addColorStop(1, "rgba(201,168,76,0)");
+        sCtx.fillStyle = cg;
+        sCtx.beginPath();
+        sCtx.arc(cx, cy, 80, 0, Math.PI * 2);
+        sCtx.fill();
+        sCoreGlow.opacity *= 0.97;
+        if (sCoreGlow.opacity < 0.01) sCoreGlow.opacity = 0;
+      }
+
+      // Rays
+      for (let i = sRays.length - 1; i >= 0; i--) {
+        const r = sRays[i];
+        if (r.length < r.maxLength) r.length += r.speed;
+        else r.opacity -= 0.015;
+        if (r.opacity <= 0) { sRays.splice(i, 1); continue; }
+        sCtx.save();
+        sCtx.translate(cx, cy);
+        sCtx.rotate(r.angle);
+        const lg = sCtx.createLinearGradient(0, 0, r.length, 0);
+        lg.addColorStop(0, `rgba(201,168,76,${r.opacity})`);
+        lg.addColorStop(1, "rgba(201,168,76,0)");
+        sCtx.strokeStyle = lg;
+        sCtx.lineWidth = r.width;
+        sCtx.beginPath();
+        sCtx.moveTo(35, 0);
+        sCtx.lineTo(35 + r.length, 0);
+        sCtx.stroke();
+        sCtx.restore();
+      }
+
+      // Shockwave rings
+      for (let i = sRings.length - 1; i >= 0; i--) {
+        const r = sRings[i];
+        r.radius += r.speed;
+        r.opacity -= 0.006;
+        if (r.opacity <= 0 || r.radius > r.maxRadius) { sRings.splice(i, 1); continue; }
+        sCtx.beginPath();
+        sCtx.arc(cx, cy, r.radius, 0, Math.PI * 2);
+        sCtx.strokeStyle = `rgba(201,168,76,${r.opacity})`;
+        sCtx.lineWidth = r.width;
+        sCtx.stroke();
+      }
+
+      // Particles
+      for (let i = sParticles.length - 1; i >= 0; i--) {
+        const p = sParticles[i];
+        if (p.trail && p.life > 10) {
+          sCtx.beginPath();
+          sCtx.moveTo(p.x, p.y);
+          sCtx.lineTo(p.x - p.vx * 3, p.y - p.vy * 3);
+          const ta = (p.life / p.maxLife) * 0.3;
+          sCtx.strokeStyle = `rgba(${p.r},${p.g},${p.b},${ta})`;
+          sCtx.lineWidth = p.size * (p.life / p.maxLife) * 0.6;
+          sCtx.stroke();
+        }
+        p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.988; p.vy *= 0.988;
+        if (p.ember) {
+          p.vx += (Math.random() - 0.5) * 0.2;
+          p.vy += (Math.random() - 0.5) * 0.2;
+        }
+        p.life--;
+        if (p.life <= 0) { sParticles.splice(i, 1); continue; }
+        const al = p.life / p.maxLife;
+        const sz = p.size * al;
+        sCtx.beginPath();
+        sCtx.arc(p.x, p.y, sz, 0, Math.PI * 2);
+        sCtx.fillStyle = `rgba(${p.r},${p.g},${p.b},${al})`;
+        sCtx.fill();
+        if (sz > 2) {
+          sCtx.beginPath();
+          sCtx.arc(p.x, p.y, sz * 3, 0, Math.PI * 2);
+          sCtx.fillStyle = `rgba(${p.r},${p.g},${p.b},${al * 0.1})`;
+          sCtx.fill();
+        }
+      }
+
+      const alive = sParticles.length > 0 || sRings.length > 0 || sRays.length > 0 || sStarfield.length > 0 || sGlow.opacity > 0 || sCoreGlow.opacity > 0;
+      if (alive) {
+        requestAnimationFrame(sAnimate);
+      } else {
+        sRunning = false;
+      }
+    }
+
+    window.fireSupernova = function() {
+      const hero = cv.parentElement;
+      const rect = hero.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      cv.width = rect.width * dpr;
+      cv.height = rect.height * dpr;
+      cv.style.width = rect.width + "px";
+      cv.style.height = rect.height + "px";
+      sCtx.scale(dpr, dpr);
+      const w = rect.width, h = rect.height;
+
+      // Logo center relative to hero
+      const logoRect = logo.getBoundingClientRect();
+      const cx = logoRect.left - rect.left + logoRect.width / 2;
+      const cy = logoRect.top - rect.top + logoRect.height / 2;
+      sDims = { w, h, cx, cy };
+
+      // Reset arrays
+      sParticles = []; sRings = []; sRays = []; sStarfield = [];
+
+      // Logo squeeze + release
+      logo.style.transition = "transform 0.12s cubic-bezier(0.4,0,1,1)";
+      logo.style.transform = "scale(0.82)";
+      setTimeout(() => {
+        logo.style.transition = "transform 0.5s cubic-bezier(0,0.8,0.2,1.2)";
+        logo.style.transform = "scale(1.12)";
+        setTimeout(() => {
+          logo.style.transition = "transform 0.4s ease-out";
+          logo.style.transform = "scale(1)";
+        }, 500);
+      }, 120);
+
+      // Screen shake
+      hero.style.animation = "none";
+      void hero.offsetWidth;
+      hero.style.animation = "lk-shake 0.4s ease-out";
+
+      // Flash
+      flash.style.transition = "opacity 0.06s";
+      flash.style.opacity = "1";
+      setTimeout(() => {
+        flash.style.transition = "opacity 0.7s ease-out";
+        flash.style.opacity = "0";
+      }, 60);
+
+      // Spawn particles (100 main + 30 embers — bigger for homepage)
+      for (let i = 0; i < 100; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const spd = 2.5 + Math.random() * 8;
+        const sz = 1.2 + Math.random() * 4;
+        const l = 55 + Math.floor(Math.random() * 65);
+        const t = Math.random();
+        sParticles.push({
+          x: cx, y: cy,
+          vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
+          size: sz, life: l, maxLife: l,
+          r: t < 0.6 ? 201 : t < 0.85 ? 255 : 255,
+          g: t < 0.6 ? 168 : t < 0.85 ? 200 : 255,
+          b: t < 0.6 ? 76 : t < 0.85 ? 120 : 220,
+          trail: sz > 2.5
+        });
+      }
+      for (let i = 0; i < 30; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const d = 20 + Math.random() * 45;
+        sParticles.push({
+          x: cx + Math.cos(a) * d, y: cy + Math.sin(a) * d,
+          vx: Math.cos(a) * (0.2 + Math.random() * 0.8),
+          vy: Math.sin(a) * (0.2 + Math.random() * 0.8),
+          size: 0.8 + Math.random() * 1.5,
+          life: 90 + Math.floor(Math.random() * 60), maxLife: 150,
+          r: 201, g: 168, b: 76, ember: true
+        });
+      }
+
+      // Shockwave rings (5 — bigger for homepage)
+      for (let i = 0; i < 5; i++) {
+        sRings.push({ radius: 20, maxRadius: 200 + i * 70, opacity: 0.55 - i * 0.08, width: 2.5 - i * 0.35, speed: 3.5 + i * 1.2 });
+      }
+
+      // Light rays (16)
+      for (let i = 0; i < 16; i++) {
+        const a = (Math.PI * 2 / 16) * i + (Math.random() - 0.5) * 0.3;
+        sRays.push({ angle: a, length: 0, maxLength: 100 + Math.random() * 140, opacity: 0.35 + Math.random() * 0.25, width: 1 + Math.random() * 2, speed: 5 + Math.random() * 4 });
+      }
+
+      // Starfield (60)
+      for (let i = 0; i < 60; i++) {
+        sStarfield.push({
+          x: Math.random() * w, y: Math.random() * h,
+          size: 0.5 + Math.random() * 1.4,
+          twinkle: Math.random() * Math.PI * 2,
+          speed: 0.02 + Math.random() * 0.04,
+          life: 80 + Math.floor(Math.random() * 80), maxLife: 160
+        });
+      }
+
+      sGlow = { opacity: 0.65, radius: 50 };
+      sCoreGlow = { opacity: 1 };
+
+      if (!sRunning) {
+        sRunning = true;
+        requestAnimationFrame(sAnimate);
+      }
+    };
+  })();
 </script>
 </body>
 </html>

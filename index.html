@@ -885,6 +885,7 @@ font-size: clamp(0.95rem, 1.4vw, 1.05rem);
       cv.height = rect.height * dpr;
       cv.style.width = rect.width + "px";
       cv.style.height = rect.height + "px";
+      sCtx.setTransform(1, 0, 0, 1, 0, 0);
       sCtx.scale(dpr, dpr);
       const w = rect.width, h = rect.height;
 
@@ -982,6 +983,13 @@ font-size: clamp(0.95rem, 1.4vw, 1.05rem);
         requestAnimationFrame(sAnimate);
       }
     };
+
+    if (!sessionStorage.getItem('supernovaPlayed')) {
+      setTimeout(() => {
+        window.fireSupernova();
+        sessionStorage.setItem('supernovaPlayed', '1');
+      }, 1200);
+    }
   })();
 
   // ─── Direktaufruf Impressum via Hash (z.B. von netzwerk.html) ───
